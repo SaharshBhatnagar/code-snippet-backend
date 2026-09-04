@@ -1,3 +1,6 @@
+-- database name 'devhub'
+-- database postgresql
+
 BEGIN;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -38,3 +41,13 @@ INSERT INTO snippets (title, description, code, category, author) VALUES
 ON CONFLICT (title, author) DO NOTHING;
 
 COMMIT;
+
+-- Use this to view dataset
+-- SELECT * FROM snippets;
+-- SELECT id, title, author FROM snippets;
+-- SELECT * FROM users;
+
+
+-- UPDATE snippets 
+-- SET title = 'Advanced JWT Hook', description = 'Updated my hook to handle refresh tokens.'
+-- WHERE id = 1 AND author = 'Jane D.';
