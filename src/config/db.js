@@ -7,6 +7,9 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
   maxLifetimeSeconds: 60,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 async function connectDB() {
