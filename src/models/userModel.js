@@ -22,3 +22,39 @@ export async function accountCreate(username, email, password_hash) {
         throw err;
     }
 };
+
+export async function savePasswordResetToken(email, token, expireTime) {
+    try {
+        await pool.query(
+            `UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE email = $3`,
+            [token, expireTime, email]
+        );
+        return true;
+    } catch (err) {
+        throw err;
+    }
+}
+
+export async function findByResetToken(token) {
+    try {
+        const result = await pool.query(
+            `SELECT * FROM users WHERE reset_token = $1 AND reset_token_expires > NOW()`,
+            [token]
+        );
+        return result.rows[0];
+    } catch (err) {
+        throw err;
+    }
+}
+
+export async function updatePassword(userId, hashedPassword) {
+    try {
+        await pool.query(
+            `UPDATE users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2`,
+            [hashedPassword, userId]
+        );
+        return true;
+    } catch (err) {
+        throw err;
+    }
+}

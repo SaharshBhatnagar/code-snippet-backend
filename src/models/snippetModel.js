@@ -1,6 +1,44 @@
 import { pool } from '../config/db.js';
 
-const Snippets = { 
+const Snippets = {
+    create: async (title, description, code, category, language, author) => {
+        try {
+            const result = await pool.query(`
+                INSERT INTO snippets (title, description, code, category, language, author)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                RETURNING *;
+            `, [title, description, code, category, language, author]);
+            return result.rows[0];
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    update: async (id, title, description, code, category, language, author) => {
+        try {
+            const result = await pool.query(`
+                UPDATE snippets
+                SET title = $1, description = $2, code = $3, category = $4, language = $5
+                WHERE id = $6 AND author = $7
+                RETURNING *;
+            `, [title, description, code, category, language, id, author]);
+            return result.rows[0];
+        } catch (err) {
+            throw err;
+        }
+    },
+
+    delete: async (id, author) => {
+        try {
+            const result = await pool.query(`
+                DELETE FROM snippets
+                WHERE id = $1 AND author = $2;
+            `, [id, author]);
+            return result.rowCount > 0;
+        } catch (err) {
+            throw err;
+        }
+    },
     findAll: async () => {
         try {
             const results = await pool.query('SELECT * FROM snippets ORDER BY created_at DESC');
@@ -35,6 +73,18 @@ const Snippets = {
         } 
         catch (err) {
                 throw err;
+        }
+    },
+    addSnippet: async (title, description, code, category, author) => {
+        try {
+            const result = await pool.query(`
+                INSERT INTO snippets (title, description, code, category, author)
+                VALUES ($1, $2, $3, $4, $5)
+                RETURNING *;
+            `, [title, description, code, category, author]);
+            return result.rows[0];
+        } catch (err) {
+            throw err;
         }
     },
     removeFavorite: async (userId, snippetId) => {
